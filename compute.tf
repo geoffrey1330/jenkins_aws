@@ -51,7 +51,6 @@ resource "aws_instance" "instance1" {
 }
 
 resource "aws_instance" "instance2" {
-  depends_on                  = [aws_efs_mount_target.efs-mt-1]
   ami                         = data.aws_ami.ubuntu.id
   instance_type               = "t2.micro"
   vpc_security_group_ids      = [aws_security_group.ec2.id]
@@ -67,9 +66,30 @@ resource "aws_instance" "instance2" {
   }
 
   tags = {
-    Name        = "${var.PROJECT_NAME}_instance1"
+    Name        = "${var.PROJECT_NAME}_instance2"
     Terraform   = "true"
     Environment = "dev"
   }
 }
 
+resource "aws_instance" "instance3" {
+  ami                         = data.aws_ami.ubuntu.id
+  instance_type               = "t2.nano"
+  vpc_security_group_ids      = [aws_security_group.ec2.id]
+  associate_public_ip_address = true
+  subnet_id                   = aws_subnet.public.id
+  key_name                    = aws_key_pair.key-pair-1.id
+
+  user_data = base64encode(file("user-data-instance3.tpl"))
+
+  connection {
+    user        = var.EC2_USER
+    private_key = file(var.PRIVATE_KEY_PATH)
+  }
+
+  tags = {
+    Name        = "${var.PROJECT_NAME}_instance3"
+    Terraform   = "true"
+    Environment = "dev"
+  }
+}
