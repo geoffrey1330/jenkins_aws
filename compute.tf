@@ -27,7 +27,7 @@ resource "aws_key_pair" "key-pair-1" {
 
 
 resource "aws_instance" "instance1" {
-  depends_on                  = [aws_efs_mount_target.efs-mt-1]
+  # depends_on                  = [aws_efs_mount_target.efs-mt-1]
   ami                         = data.aws_ami.ubuntu.id
   instance_type               = "t2.micro"
   vpc_security_group_ids      = [aws_security_group.ec2.id]
@@ -36,7 +36,8 @@ resource "aws_instance" "instance1" {
   key_name                    = aws_key_pair.key-pair-1.id
 
   user_data = base64encode(templatefile("user-data-instance1.tpl",
-  { aws_efs_id = aws_efs_file_system.efs1.id }))
+  { aws_efs_id = aws_efs_file_system.efs1.id,
+    jenkins_admin_password = "password"}))
 
   connection {
     user        = var.EC2_USER

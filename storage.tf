@@ -12,9 +12,8 @@ resource "aws_efs_file_system" "efs1" {
 }
 
 
-resource "aws_efs_mount_target" "efs-mt-1" {
-  file_system_id  = aws_efs_file_system.efs1.id
-  subnet_id       = aws_subnet.public.id
-  security_groups = [aws_security_group.efs.id]
-
-}
+# resource "aws_efs_mount_target" "efs-mt-1" {
+#   file_system_id  = aws_efs_file_system.efs1.id
+#   subnet_id       = aws_subnet.public.id
+#   security_groups = [aws_security_group.efs.id]
+# }
